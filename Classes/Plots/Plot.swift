@@ -35,7 +35,7 @@ open class Plot {
     private var previousTimestamp: CFTimeInterval = 0
     private var currentTimestamp: CFTimeInterval = 0
     
-    private var graphPoints = [GraphPoint]()
+    var graphPoints = [GraphPoint]()
     
     deinit {
         displayLink?.invalidate()
@@ -113,7 +113,7 @@ open class Plot {
         }
     }
     
-    internal func dequeueAllAnimations() {
+    func dequeueAllAnimations() {
         
         for animation in currentAnimations {
             animation.animationDidFinish()
@@ -141,12 +141,12 @@ open class Plot {
         return dt
     }
     
-    internal func startAnimations(forPoints pointsToAnimate: CountableRange<Int>, withData data: [Double], withStaggerValue stagger: Double) {
+    func startAnimations(forPoints pointsToAnimate: CountableRange<Int>, withData data: [Double], withStaggerValue stagger: Double) {
         
         animatePlotPointPositions(forPoints: pointsToAnimate, withData: data, withDelay: stagger)
     }
     
-    internal func createPlotPoints(numberOfPoints: Int, range: (min: Double, max: Double)) {
+    func createPlotPoints(numberOfPoints: Int, range: (min: Double, max: Double)) {
         for i in 0 ..< numberOfPoints {
             
             let value = range.min
@@ -160,7 +160,7 @@ open class Plot {
     // When active interval changes, need to set the position for any NEWLY ACTIVATED points, otherwise
     // they will come on screen at the incorrect position.
     // Needs to be called when the active interval has changed and during initial setup.
-    internal func setPlotPointPositions(forNewlyActivatedPoints newPoints: CountableRange<Int>, withData data: [Double]) {
+    func setPlotPointPositions(forNewlyActivatedPoints newPoints: CountableRange<Int>, withData data: [Double]) {
         
         for i in newPoints.startIndex ..< newPoints.endIndex {
             // e.g.
@@ -177,7 +177,7 @@ open class Plot {
     }
     
     // Same as a above, but can take an array with the indicies of the activated points rather than a range.
-    internal func setPlotPointPositions(forNewlyActivatedPoints activatedPoints: [Int], withData data: [Double]) {
+    func setPlotPointPositions(forNewlyActivatedPoints activatedPoints: [Int], withData data: [Double]) {
         
         var index = 0
         for activatedPointIndex in activatedPoints {
@@ -196,7 +196,7 @@ open class Plot {
     // When the range changes, we need to set the position for any VISIBLE points, either animating or setting directly
     // depending on the settings.
     // Needs to be called when the range has changed.
-    internal func animatePlotPointPositions(forPoints pointsToAnimate: CountableRange<Int>, withData data: [Double], withDelay delay: Double) {
+    func animatePlotPointPositions(forPoints pointsToAnimate: CountableRange<Int>, withData data: [Double], withDelay delay: Double) {
         // For any visible points, kickoff the animation to their new position after the axis' min/max has changed.
         var dataIndex = 0
         for pointIndex in pointsToAnimate {
@@ -207,13 +207,13 @@ open class Plot {
         }
     }
     
-    internal func setup() {
+    func setup() {
         displayLink = CADisplayLink(target: self, selector: #selector(animationUpdate))
         displayLink.add(to: RunLoop.main, forMode: RunLoopMode.commonModes)
         displayLink.isPaused = true
     }
     
-    internal func reset() {
+    func reset() {
         currentAnimations.removeAll()
         graphPoints.removeAll()
         displayLink?.invalidate()
@@ -221,8 +221,11 @@ open class Plot {
         currentTimestamp = 0
     }
     
-    internal func graphPoint(forIndex index: Int) -> GraphPoint {
-        return graphPoints[index]
+    func graphPoint(forIndex index: Int) -> GraphPoint {
+        if index < graphPoints.count {
+            return graphPoints[index]
+        }
+        return GraphPoint()
     }
 }
 

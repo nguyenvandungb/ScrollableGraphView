@@ -10,7 +10,11 @@ open class LinePlot : Plot {
     open var lineWidth: CGFloat = 2
     
     /// The color of the graph line. UIColor.
-    open var lineColor: UIColor = UIColor.black
+    open var lineColor: UIColor = UIColor.black {
+        didSet {
+            lineLayer?.strokeColor = lineColor.cgColor
+        }
+    }
     
     /// Whether the line is straight or curved.
     open var lineStyle_: Int {
@@ -75,7 +79,7 @@ open class LinePlot : Plot {
     // Private State
     // #############
     
-    private var lineLayer: LineDrawingLayer?
+    var lineLayer: LineDrawingLayer?
     private var fillLayer: FillDrawingLayer?
     private var gradientLayer: GradientDrawingLayer?
     

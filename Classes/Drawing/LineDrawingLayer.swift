@@ -1,7 +1,7 @@
 
 import UIKit
 
-internal class LineDrawingLayer : ScrollableGraphViewDrawingLayer {
+class LineDrawingLayer : ScrollableGraphViewDrawingLayer {
     
     private var currentLinePath = UIBezierPath()
     

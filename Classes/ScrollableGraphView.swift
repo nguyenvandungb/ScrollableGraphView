@@ -13,7 +13,8 @@ import UIKit
     
     /// The background colour for the entire graph view, not just the plotted graph.
     @IBInspectable open var backgroundFillColor: UIColor = UIColor.white
-    
+    var plots: [Plot] = [Plot]()
+
     // Spacing
     // #######
     
@@ -86,13 +87,13 @@ import UIKit
     
     // Graph Drawing
     private var drawingView = UIView()
-    private var plots: [Plot] = [Plot]()
+
     
     // Reference Lines
     private var referenceLineView: ReferenceLineDrawingView?
     
     // Labels
-    private var labelsView = UIView()
+    open var labelsView = UIView()
     private var labelPool = LabelPool()
     
     // Data Source
@@ -103,10 +104,22 @@ import UIKit
             }
         }
     }
-    
+
+    open func plot(idenfifier: String) -> Plot? {
+        for plot in self.plots {
+            if plot.identifier == idenfifier {
+                return plot
+            }
+        }
+        return nil
+    }
+
+    open func getPlots() -> [Plot] {
+        return self.plots
+    }
     // Active Points & Range Calculation
     private var previousActivePointsInterval: CountableRange<Int> = -1 ..< -1
-    private var activePointsInterval: CountableRange<Int> = -1 ..< -1 {
+    var activePointsInterval: CountableRange<Int> = -1 ..< -1 {
         didSet {
             if(oldValue.lowerBound != activePointsInterval.lowerBound || oldValue.upperBound != activePointsInterval.upperBound) {
                 if !isCurrentlySettingUp { activePointsDidChange() }
@@ -155,7 +168,7 @@ import UIKit
     
     private func setup() {
         
-        clipsToBounds = true
+        clipsToBounds = false
         isCurrentlySettingUp = true
         
         // 0.
@@ -173,6 +186,7 @@ import UIKit
         drawingView = UIView(frame: viewport)
         drawingView.backgroundColor = backgroundFillColor
         self.addSubview(drawingView)
+        drawingView.clipsToBounds = false
         
         // Add the x-axis labels view.
         self.insertSubview(labelsView, aboveSubview: drawingView)
@@ -454,6 +468,7 @@ import UIKit
     
     // Limitation: Can only be used when reloading the same number of data points!
     public func reload() {
+        self.plots.removeAll()
         stopAnimations()
         rangeDidChange()
         updateUI()
@@ -826,7 +841,16 @@ import UIKit
             labelsView.addSubview(label)
         }
     }
-    
+
+    open func activePoints() -> [GraphPoint] {
+        for plot in self.plots {
+            if plot.identifier == "darkLineDot" {
+                return plot.graphPoints
+            }
+        }
+        return []
+    }
+
     private func updateLabelsForCurrentInterval() {
         // Have to ensure that the labels are added if we are supposed to be showing them.
         if let ref = self.referenceLines {

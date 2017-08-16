@@ -1,11 +1,11 @@
 import UIKit
 
-internal class GraphPoint {
+open class GraphPoint {
     
-    var location = CGPoint(x: 0, y: 0)
+    open var location = CGPoint(x: 0, y: 0)
     var currentlyAnimatingToPosition = false
     
-    var x: CGFloat {
+    open var x: CGFloat {
         get {
             return location.x
         }
@@ -14,7 +14,7 @@ internal class GraphPoint {
         }
     }
     
-    var y: CGFloat {
+    open var y: CGFloat {
         get {
             return location.y
         }
