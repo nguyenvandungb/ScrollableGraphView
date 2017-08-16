@@ -86,7 +86,7 @@ import UIKit
     
     // Graph Drawing
     private var drawingView = UIView()
-    private var plots: [Plot] = [Plot]()
+    var plots: [Plot] = [Plot]()
     
     // Reference Lines
     private var referenceLineView: ReferenceLineDrawingView?
